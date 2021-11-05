@@ -10,7 +10,7 @@ connection_string=postgresql+psycopg2://USER_NAME:PASSWORD@serveradd/database
 
 # Install
 
-```python setup.py```
+```python setup.py install```
 
 # Usage:
 
