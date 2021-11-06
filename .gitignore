@@ -132,4 +132,4 @@ dmypy.json
 .csv
 main.sqlite3
 /csv/
-.xml 
+*.xml 
