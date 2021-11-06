@@ -1,6 +1,6 @@
 import requests
 from requests.auth import HTTPBasicAuth
-from decouple import config
+from decouple import config, Csv
 from surveyextractor.tools import *
 from pprint import pprint as pp
 from os.path import exists
@@ -11,6 +11,7 @@ if __name__ == "__main__":
     """TODO: Create CLI with survey id parameter"""
     key = parse_args("Hent besvarelser!")
 
+    unique_columns = config('unique_columns', default=None, cast=Csv(str))
     survey_user = config("survey_user", default="empty", cast=str)
     survey_password = config("survey_password", cast=str)
 
@@ -37,7 +38,7 @@ if __name__ == "__main__":
 
     variable_tag = api_data["variable"]
     variables = convert_variable(variable_tag)
-    answer_schema = answers_schema(variables, answers_table)
+    answer_schema = answers_schema(variables, answers_table, unique_columns)
 
     respondents = api_data["respondent"] if "respondent" in api_data else {}
     answers = convert_respondents(respondents)
@@ -50,10 +51,9 @@ if __name__ == "__main__":
         if not isinstance(item, dict):
             # print(item)
             continue
-
-        sql = sql_insert(answers_table, item.keys(), item.values())
-        # print(sql)
-        rs = con.execute(sql, list(item.values()))
+        list_of_values = list(item.values())
+        sql = sql_insert(answers_table, item, unique_columns)
+        rs = con.execute(sql, list_of_values)
     else:
         print(f"Succesfully imported {idx+1} answers from survey {survey_id} to db.")
 

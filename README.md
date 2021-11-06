@@ -19,6 +19,10 @@ $ python create_tables.py -i SURVEY_ID
 $ python update_table_api.py -i SURVEY_ID
 ```
 
+$ crontab -e
+PATH=/srv/conda/miniconda/bin/
+10 * * * * 
+
 
 ## API documentation
 [https://documenter.getpostman.com/view/1760772/S1a33ni6](https://documenter.getpostman.com/)

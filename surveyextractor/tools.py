@@ -11,7 +11,7 @@ import argparse
 
 
 def p(object):
-    ''' Nice prettyprint '''
+    """Nice prettyprint"""
     pp(object, sort_dicts=False)
 
 
@@ -20,7 +20,9 @@ def fix_keyname(old_name: str) -> str:
     return old_name.replace("/", "_")
 
 
-def get_api_data(url: str, survey_id: int, survey_user: str, survey_password: str, cache: bool = True)->Dict:
+def get_api_data(
+    url: str, survey_id: int, survey_user: str, survey_password: str, cache: bool = True
+) -> Dict:
     """Get data from the API"""
     cache_file = f"test_{survey_id}.xml"
     use_cache = True if cache and exists(cache_file) else False
@@ -32,15 +34,17 @@ def get_api_data(url: str, survey_id: int, survey_user: str, survey_password: st
             )
 
             if response.status_code == 403:
-                raise HTTPError(f'User {survey_user} is not allowed to access survey {survey_id}, HTTP code 403')
+                raise HTTPError(
+                    f"User {survey_user} is not allowed to access survey {survey_id}, HTTP code 403"
+                )
 
             with open(cache_file, "wb") as fp:
                 content = response.content
                 fp.write(response.content)
-            #time.sleep(1)
+            # time.sleep(1)
         except Exception as e:
             print("Internal error", e)
-            exit(f'{e} wrong survey id')
+            exit(f"{e} wrong survey id")
     else:
         with open(cache_file, "rb") as fp:
             content = fp.read()
@@ -57,14 +61,18 @@ def get_api_data(url: str, survey_id: int, survey_user: str, survey_password: st
 
     output = {}
 
-    api_data = api_data['dataset']
-    if isinstance(api_data["respondents"], dict) and "respondent" in api_data["respondents"]:
+    api_data = api_data["dataset"]
+    if (
+        isinstance(api_data["respondents"], dict)
+        and "respondent" in api_data["respondents"]
+    ):
         output.update(api_data["respondents"])
 
     if "variable" in api_data["variables"]:
         output.update(api_data["variables"])
 
     return output
+
 
 def is_digit(text: str) -> bool:
     """Function to test if string is a number, including decimal numbers"""
@@ -105,7 +113,6 @@ def text(input):
         return f"'{input}'"
 
 
-
 def convert_respondents(respondents):
     answers = []
     # omskriv xmltodict, så keys bliver name
@@ -122,20 +129,23 @@ def convert_respondents(respondents):
                         )
 
                     if "choice" in it:
-                        choices = ( int(it["choice"][0]["attr_id"])
+                        choices = (
+                            int(it["choice"][0]["attr_id"])
                             if len(it["choice"]) == 1
                             else [int(att["attr_id"]) for att in it["choice"]]
                         )
-                        if key == 'valueMultiple':
+                        if key == "valueMultiple":
                             choices = [int(att["attr_id"]) for att in it["choice"]]
-                            #print(it['choice'])
+                            # print(it['choice'])
                         new[key_name] = choices
         else:
             answers.append(new)
     return answers
 
 
-def answers_schema(variables: List[Dict], answers_table) -> str:
+def answers_schema(
+    variables: List[Dict], answers_table: str, unique_columns: tuple
+) -> str:
     """Define table schema for Labels by types in variables"""
 
     types = {
@@ -149,34 +159,44 @@ def answers_schema(variables: List[Dict], answers_table) -> str:
 
     for var in variables:
         out[var["name"]] = types.get(var["type"], "TEXT")
-        #print(var["type"])
+        # print(var["type"])
     else:
         string = f"CREATE TABLE {answers_table} (\n"
         string += " respondent_externkey varchar(24) \n,"
         string += " , \n ".join(key + " " + value for key, value in out.items())
+        string += f", UNIQUE({','.join(unique_columns)})"
         string += ");"
-        string += f"CREATE UNIQUE INDEX ON {answers_table} (respondent_externkey, respondent_modified)"
+        # string += f"CREATE UNIQUE INDEX ON {answers_table} (respondent_externkey, respondent_modified)"
     return string
 
-def sql_insert(table_name: str, columns: List[str], values: List[Any])->str:
+
+def sql_insert(table_name: str, element: dict, unique_columns: List[str] = None) -> str:
+    columns = list(element.keys())
     column = ", ".join(columns)
-    values = ", ".join("%s" for value in values)
-    sql = f"INSERT INTO {table_name} ({column}) VALUES ({values}) ON CONFLICT DO NOTHING; ".replace(
-        "'Null'", "Null"
+    placeholder_values = ", ".join("%s" for value in columns)
+    values_updating = tuple(
+        str(v).replace("[", "{").replace("]", "}") if isinstance(v, list) else v
+        for v in element.values()
     )
 
+    if unique_columns is None:
+        conflict = " ON CONFLICT DO NOTHING;"
+    else:
+        conflict = f" ON CONFLICT ({','.join(unique_columns)}) DO UPDATE SET ({column}) = {values_updating};"
+
+    sql = f"INSERT INTO {table_name} ({column}) VALUES ({placeholder_values}) {conflict};".replace("'Null'", "Null")
     return sql
 
+
 def parse_args(description="Hvad gør dette program?"):
-    ''' Arguments for CLI program:
+    """Arguments for CLI program:
     eg.
     $ python create_tables_api.py -i survey_id
 
-    '''
-
+    """
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument(
-        "-i", "--survey_id", type=int,  help="Survey ID"
+        "-i", "--survey_id", type=int, default=1293732, help="Survey ID"
     )
 
     args = parser.parse_args()

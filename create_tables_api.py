@@ -49,7 +49,7 @@ if __name__ == "__main__":
             if not isinstance(item, dict):
                 continue
 
-            sql = sql_insert(labels_table, item.keys(), item.values())
+            sql = sql_insert(labels_table, item)
             rs = con.execute(sql, list(item.values()))
         else:
             print(f"Succesfully import variables from survey_id {survey_id}")
