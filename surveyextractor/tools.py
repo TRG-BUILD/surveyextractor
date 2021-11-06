@@ -196,7 +196,7 @@ def parse_args(description="Hvad gør dette program?"):
     """
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument(
-        "-i", "--survey_id", type=int, default=1293732, help="Survey ID"
+        "-i", "--survey_id", type=int, help="Survey ID"
     )
 
     args = parser.parse_args()
