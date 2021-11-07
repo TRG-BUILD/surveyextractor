@@ -166,6 +166,7 @@ def answers_schema(
         string += " , \n ".join(key + " " + value for key, value in out.items())
         string += f", UNIQUE({','.join(unique_columns)})"
         string += ");"
+        string += f"create index on {answers_table}(respondent_externkey);"
         # string += f"CREATE UNIQUE INDEX ON {answers_table} (respondent_externkey, respondent_modified)"
     return string
 
