@@ -169,7 +169,7 @@ def answers_schema(
         string += f"create index on {answers_table}(respondent_externkey);"
         # string += f"CREATE UNIQUE INDEX ON {answers_table} (respondent_externkey, respondent_modified)"
     return string
-@
+
 
 def sql_insert(table_name: str, element: dict, unique_columns: List[str] = None) -> str:
     columns = list(element.keys())
