@@ -16,9 +16,10 @@ if __name__ == "__main__":
 
     survey_id = key["survey_id"]
 
-    url = f"https://rest.survey-xact.dk/rest/surveys/{survey_id}/export/dataset?format=XML"
+    url = "https://rest.survey-xact.dk/rest/surveys/{survey_id}/export/dataset?format=XML"
 
     api_data = get_api_data(url, survey_id, survey_user, survey_password)
+
 
     variable_tag = api_data["variable"]
     variables = convert_variable(variable_tag)
