@@ -16,7 +16,7 @@ if __name__ == "__main__":
 
     survey_id = key["survey_id"]
 
-	sql = f"""rop view if exists strategi_mailings;
+	sql = f"""drop view if exists strategi_mailings;
 	CREATE VIEW strategi_mailings as
 	SELECT * FROM (SELECT
 	answer_id as respondentid,
