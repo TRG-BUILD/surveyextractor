@@ -28,7 +28,7 @@ def get_api_data(
     """Get data from the API"""
     path = pathlib.Path().resolve()
 
-    cache_file = path / cache / f"test_{survey_id}.xml"
+    cache_file = path / "cache" / f"test_{survey_id}.xml"
     use_cache = True if cache and exists(cache_file) else False
 
     if not use_cache:
