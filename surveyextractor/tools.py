@@ -26,7 +26,7 @@ def get_api_data(
     url: str, survey_id: int, survey_user: str, survey_password: str, cache: bool = True
 ) -> Dict:
     """Get data from the API"""
-    path = pathlib.Path().resolve()
+    path = pathlib.Path(__file__).resolve().parent.parent
 
     cache_file = path / "cache" / f"test_{survey_id}.xml"
     use_cache = True if cache and exists(cache_file) else False
