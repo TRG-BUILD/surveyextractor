@@ -187,7 +187,7 @@ def sql_insert(table_name: str, element: dict, unique_columns: List[str] = None)
     if unique_columns is None:
         conflict = " ON CONFLICT DO NOTHING;"
     else:
-        conflict = f" ON CONFLICT ({','.join(unique_columns)}) DO UPDATE SET ({column}) = {values_updating};"
+        conflict = f" ON CONFLICT ON CONSTRAINT unique_{table_name} DO UPDATE SET ({column}) = {values_updating};"
 
     sql = f"INSERT INTO {table_name} ({column}) VALUES ({placeholder_values}) {conflict};".replace("'Null'", "Null")
     return sql
