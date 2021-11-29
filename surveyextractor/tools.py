@@ -190,7 +190,7 @@ def sql_insert(table_name: str, element: dict, unique_columns: List[str] = None)
         conflict = f" ON CONFLICT ON CONSTRAINT unique_{table_name} DO UPDATE SET ({column}) = {values_updating};"
 
     if table_name == "answers_1293732":
-        conflict = f" ON CONFLICT ON CONSTRAINT unique_{table_name} DO UPDATE SET (background_trg_hotline) = ({element['background_trg_hotline']});"
+        conflict = f" ON CONFLICT ON CONSTRAINT unique_{table_name} DO UPDATE SET (background_trg_hotline) = (EXCLUDED.background_trg_hotline);"
 
     sql = f"INSERT INTO {table_name} ({column}) VALUES ({placeholder_values}) {conflict};".replace("'Null'", "Null")
     return sql
