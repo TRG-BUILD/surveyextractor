@@ -16,7 +16,7 @@ if __name__ == "__main__":
 
     survey_id = key["survey_id"]
 
-    url = "https://rest.survey-xact.dk/rest/surveys/{survey_id}/export/dataset?format=XML"
+    url = f"https://rest.survey-xact.dk/rest/surveys/{survey_id}/export/dataset?format=XML"
 
     api_data = get_api_data(url, survey_id, survey_user, survey_password)
 
