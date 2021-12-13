@@ -42,6 +42,10 @@ if __name__ == "__main__":
 
     respondents = api_data["respondent"] if "respondent" in api_data else {}
     answers = convert_respondents(respondents)
+
+    if 'key_not_null' in key and key['key_not_null'] is not None:
+        answers = [answer for answer in answers if key['key_not_null'] in answer]
+
     print(f"Answers since last time: {len(answers)}")
     if not table_exists:
         print(f"Creating table: {answers_table}")

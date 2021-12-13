@@ -214,6 +214,10 @@ def parse_args(description="Hvad gør dette program?"):
         "-i", "--survey_id", type=int, help="Survey ID"
     )
 
+    parser.add_argument(
+        "-k", "--key_not_null", type=str, help="Is key needed to bee not null? eg samtykke"
+    )
+
     args = parser.parse_args()
     parser.parse_args()
 
