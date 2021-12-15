@@ -1,6 +1,6 @@
 import logging
 import argparse
-from easemailing.easemail import logger
+from easemail import logger
 import json
 import os
 from teams_logger import TeamsHandler
