@@ -25,15 +25,17 @@ if __name__ == "__main__":
     table_exists = engine.dialect.has_table(con, answers_table)
     last_modified_arg = ""
 
+    output : list = []
+
     if table_exists:
         sql_lastmodified = f"SELECT to_char(respondent_modified, 'yyyyMMdd_HH24MIss') as formated_date FROM {answers_table} order by respondent_modified DESC limit 1;"
         result = con.execute(sql_lastmodified)
         if result.rowcount == 1:
             last_modified_arg = f"&modifiedSince={result.first()[0]}"
-        print(last_modified_arg)
+        output.append(last_modified_arg)
 
     url = f"https://rest.survey-xact.dk/rest/surveys/{survey_id}/export/dataset?format=XML{last_modified_arg}"  # &modifiedSince=20211029_081010"
-    print(url)
+    output.append(url)
     api_data = get_api_data(url, survey_id, survey_user, survey_password, cache=False)
 
     variable_tag = api_data["variable"]
@@ -46,9 +48,9 @@ if __name__ == "__main__":
     if 'key_not_null' in key and key['key_not_null'] is not None:
         answers = [answer for answer in answers if key['key_not_null'] in answer]
 
-    print(f"Answers since last time: {len(answers)}")
+    output.append(f"Answers since last time: {len(answers)}")
     if not table_exists:
-        print(f"Creating table: {answers_table}")
+        output.appendt s(f"Creating table: {answers_table}")
         rs = con.execute(answer_schema)
 
     for idx, item in enumerate(answers):
@@ -59,6 +61,8 @@ if __name__ == "__main__":
         sql = sql_insert(answers_table, item, unique_columns)
         rs = con.execute(sql, list_of_values)
     else:
-        print(f"Succesfully imported {idx+1} answers from survey {survey_id} to db.")
+        output.append(f"Succesfully imported {idx+1} answers from survey {survey_id} to db.")
 
     con.close()
+
+    print("\n".join())

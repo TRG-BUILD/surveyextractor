@@ -226,3 +226,10 @@ def parse_args(description="Hvad gør dette program?"):
 
     # Få det som en dictionary
     return vars(args)
+
+def get_answer_stats():
+    '''
+    table: SELECT * FROM public.answer_stats
+
+    '''
+    pass
