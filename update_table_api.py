@@ -50,7 +50,7 @@ if __name__ == "__main__":
 
     output.append(f"Answers since last time: {len(answers)}")
     if not table_exists:
-        output.appendt s(f"Creating table: {answers_table}")
+        output.append(f"Creating table: {answers_table}")
         rs = con.execute(answer_schema)
 
     for idx, item in enumerate(answers):
