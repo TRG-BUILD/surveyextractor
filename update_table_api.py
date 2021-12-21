@@ -65,4 +65,4 @@ if __name__ == "__main__":
 
     con.close()
 
-    print("\n".join())
+    print("\n".join(output))
