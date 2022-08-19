@@ -19,10 +19,14 @@ $ python create_tables.py -i SURVEY_ID
 $ python update_table_api.py -i SURVEY_ID
 ```
 
+## Cronjob
+```bash
 $ crontab -e
-PATH=/srv/conda/miniconda/bin/
-10 * * * * 
-
+```
+```
+0 */12 * * * python /srv/surveyextractor/update_table_api.py -i SURVEY_ID >> /srv/surveyextractor/survey_log.log
+0 */12 * * * python /srv/surveyextractor/update_table_api.py -i SURVEY_ID >> /srv/surveyextractor/survey_log.log
+```
 
 ## API documentation
 [https://documenter.getpostman.com/view/1760772/S1a33ni6](https://documenter.getpostman.com/)
